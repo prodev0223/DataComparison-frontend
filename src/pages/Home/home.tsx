@@ -9,7 +9,7 @@ import { GameAttribute } from '../../model/GameAttribute';
 
 const Home = ()=> {
   const [gameData, setGameData] = useState<GameAttribute[]>([]);
-  const [teamData, setTeamData] = useState<GameAttribute[]>([]);
+  const [teamHomeData, setTeamHomeData] = useState<GameAttribute[]>([]);
 
   useEffect(() => {
     getAllDiscrepancies().then(result=>{
