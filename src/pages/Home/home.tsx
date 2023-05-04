@@ -7,12 +7,14 @@ import pairDataForGame from '../../utils/pair/pairDataForGame';
 import { GameAttribute } from '../../model/GameAttribute';
 import pairDataForTeam from '../../utils/pair/pairDataForTeam';
 import { Player } from '../../model/Player';
+import pairDataForPlayer from '../../utils/pair/pairDataForPlayer';
 
 const Home = ()=> {
   const [gameData, setGameData] = useState<GameAttribute[]>([]);
   const [teamHomeData, setTeamHomeData] = useState<GameAttribute[]>([]);
   const [teamAwayData, setTeamAwayData] = useState<GameAttribute[]>([]);
   const [homePlayersData, setHomePlayerData] = useState<Player[]>([]);
+  const [awayPlayersData, setAwayPlayerData] = useState<Player[]>([]);
 
   useEffect(() => {
     getAllDiscrepancies().then(result=>{
@@ -20,7 +22,7 @@ const Home = ()=> {
     })
   }, []);
 
-  const pairAll = (data ={}) => {
+  const pairAll = (data: any) => {
     const game = pairDataForGame(data );
     setGameData(game);
 
@@ -29,6 +31,8 @@ const Home = ()=> {
 
     const awayData = pairDataForTeam(data, 'away');
     setTeamAwayData(awayData);
+    setHomePlayerData(pairDataForPlayer(data['homePlayers'] ))
+    setAwayPlayerData(pairDataForPlayer(data['awayPlayers']))
   }
 
   const columns: ColumnsType<GameAttribute> = [
