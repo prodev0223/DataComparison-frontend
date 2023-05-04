@@ -8,6 +8,7 @@ import { GameAttribute } from '../../model/GameAttribute';
 import pairDataForTeam from '../../utils/pair/pairDataForTeam';
 import { Player } from '../../model/Player';
 import pairDataForPlayer from '../../utils/pair/pairDataForPlayer';
+import switchUrlForType from '../../utils/pair/switchUrlForType';
 
 const Home = ()=> {
   const [gameData, setGameData] = useState<GameAttribute[]>([]);
@@ -36,10 +37,10 @@ const Home = ()=> {
   }
 
   const generateColumns= (type =0, title = 'Title'): ColumnsType<any>  => {
-    if(type == 0){
+    if(type == 0|| type== 1){
       const columns: ColumnsType<GameAttribute> = [
         {
-          title,
+          title: <a href={switchUrlForType(type)}>{title}</a>,
           dataIndex: 'keyName',
           key: 'keyName',
           render: (text) => <a>{text}</a>,
@@ -54,7 +55,7 @@ const Home = ()=> {
 
     const columns: ColumnsType<Player> = [
       {
-        title: title,
+        title: <a href={switchUrlForType(type)}>{title}</a>,
         render: (player) => player.id,
       },
       {
@@ -90,10 +91,10 @@ const Home = ()=> {
       <p className='text-2xl font-bold text-center my-6'> All discrepancies </p>
       <div className='px-5 my-5'>
         <Table columns={generateColumns(0, 'Game')} dataSource={gameData} pagination={false}/>
-        <Table columns={generateColumns(0, 'Home Team')} dataSource={teamHomeData} pagination={false}/>
-        <Table columns={generateColumns(0, 'Away Team')} dataSource={teamAwayData} pagination={false}/>
-        <Table columns={generateColumns(1, 'Home Players')} dataSource={homePlayersData} pagination={false}/>
-        <Table columns={generateColumns(1, 'Away Players')} dataSource={awayPlayersData} pagination={false}/>
+        <Table columns={generateColumns(1, 'Home Team')} dataSource={teamHomeData} pagination={false}/>
+        <Table columns={generateColumns(1, 'Away Team')} dataSource={teamAwayData} pagination={false}/>
+        <Table columns={generateColumns(2, 'Home Players')} dataSource={homePlayersData} pagination={false}/>
+        <Table columns={generateColumns(2, 'Away Players')} dataSource={awayPlayersData} pagination={false}/>
       </div>
     </div>
   );
