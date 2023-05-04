@@ -36,7 +36,6 @@ const AppLayout: React.FC = () => {
     const [current, setCurrent] = useState('all');
 
     const onClick: MenuProps['onClick'] = (e) => {
-        console.log('click ', e);
         setCurrent(e.key);
     };
 
