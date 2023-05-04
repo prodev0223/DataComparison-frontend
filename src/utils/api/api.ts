@@ -7,19 +7,19 @@ const getBaseUrl = ()=> {
 }
 
 const getAllDiscrepancies = async(data = {})=> {
-    return request.post(ApiList.All, data);
+    return request.get(ApiList.All, data);
 }
 
 const getDiscrepanciesByPlayer = async(data = {})=> {
-    return request.post(ApiList.Player, data);
+    return request.get(ApiList.Player, data);
 }
 
 const getDiscrepanciesByGame = async(data = {})=> {
-    return request.post(ApiList.Game, data);
+    return request.get(ApiList.Game, data);
 }
 
 const getDiscrepanciesByTeam = async(data = {})=> {
-    return request.post(ApiList.Team, data);
+    return request.get(ApiList.Team, data);
 }
 
 export default {
