@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+
 interface DataType {
   key: string;
   title: string;
   type: string;
 }
 
-function Home() {
+const Home = ()=> {
   const columns: ColumnsType<DataType> = [
     {
       title: 'Title',
