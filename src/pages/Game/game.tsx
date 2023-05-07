@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Space, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { getDiscrepanciesByGame } from '../../utils/api/api';
@@ -7,19 +6,10 @@ import pairDataForGame from '../../utils/pair/pairDataForGame';
 import { GameAttribute } from '../../model/GameAttribute';
 import switchUrlForType from '../../utils/pair/switchUrlForType';
 import { rejectObject, resolveObject } from '../../utils/pair/actionForField';
-interface DataType {
-  key: string;
-  team: string;
-  awayTeam: string;
-  attendance: number;
-  discrepancies: number;
-  tags: string[];
-}
+import * as GameModel from '../../model/Game';
 
 const Game = ()=> {
-  const [gameData, setGameData] = useState<GameAttribute[]>([]);
-  const [teamHomeData, setTeamHomeData] = useState<GameAttribute[]>([]);
-  const [teamAwayData, setTeamAwayData] = useState<GameAttribute[]>([]);
+  const [gameData, setGameData] = useState<GameModel.Game[]>([]);
 
   useEffect(() => {
     getDiscrepanciesByGame().then(result=>{
@@ -32,56 +22,56 @@ const Game = ()=> {
     setGameData(game);
   }
 
-  const resolveItem = (item: GameAttribute, title='') =>{
-    resolveObject('game', item.keyName)
-    setGameData(current =>
-      current.filter(obj => {
-        return !(obj.keyName === item.keyName && obj.value == item.value)
-      }),
-    );
-  }
-
-  const rejectItem = (item: GameAttribute, title ='') =>{
-    rejectObject('game', item.keyName)
+  const resolveItem = (item: GameModel.Game, title='') =>{
+    resolveObject('game', item.id)
     setGameData(prevState => {
       const newState = prevState.map(obj => {
         // 👇️ if id equals 2, update the country property
-        if (obj.keyName === item.keyName && obj.value == item.value) {
-          return {...obj, isReject: true};
+        if (obj.id === item.id ) {
+          return {...obj, isReject: 1};
         }
-  
         // 👇️ otherwise return the object as is
         return obj;
       });
   
       return newState;
     });
-    
+  }
+
+  const rejectItem = (item: GameModel.Game, title ='') =>{
+    rejectObject('game', item.id)
+    setGameData(current =>
+      current.filter(obj => {
+        return !(obj.id === item.id)
+      }),
+    );
   }
 
   const generateColumns= (type =0, title = 'Title'):ColumnsType<any>  => {
     const columns: ColumnsType<GameAttribute> = [
       {
         title: <a href={switchUrlForType(type)}>{title}</a>,
-        dataIndex: 'keyName',
-        key: 'keyName',
-        render: (text) => <a>{text}</a>,
+        dataIndex: 'id',
+        key: 'id',
       },
       {
-        title: 'discrepancy value',
-        key: 'value',
-        dataIndex: 'value',
+        title: 'attendance',
+        key: 'attendance',
+        dataIndex: 'attendance',
       },
       {
-        title: 'Tags',
+        title: 'Status',
         render: (item) =>{
           let color = 'volcano';
-          if(item.keyName == 'id'||!item.isReject){
+          if (item.isReject === 1) {
+            color = 'green';
+          }
+          if(!item.isReject){
             return ''
           }
           return (
             <Tag color={color} key={item.isReject??'noaction'}>
-              Reject
+              Resolved
             </Tag>
           );
         }
@@ -91,7 +81,7 @@ const Game = ()=> {
         key: 'action',
         width: 200,
         render: (item) => {
-          if(item.keyName=='id') return''
+          if(item.keyName==='id') return''
           return (
           <Space size="middle">
             <Button size='small' type="primary" danger
@@ -115,7 +105,7 @@ const Game = ()=> {
     <div className="App">
       <p className='text-2xl font-bold text-center my-6'> Discrepancies For Game </p>
       <div className='px-5'>
-      <Table columns={generateColumns(0, 'Game')} dataSource={gameData} />
+        <Table columns={generateColumns(0, 'Game Id')} dataSource={gameData} />
       </div>
     </div>
   );

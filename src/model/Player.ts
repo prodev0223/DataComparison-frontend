@@ -4,5 +4,8 @@ export interface Player {
     rushTds: any,
     rushYdsGained:any,
     rec: any,
-    receivingYards: any
+    receivingYards: any,
+    teamId:any,
+    team:any,
+    isReject:any
 }

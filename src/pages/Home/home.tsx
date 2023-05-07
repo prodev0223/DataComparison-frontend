@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Space, Table } from 'antd';
+import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import {getAllDiscrepancies} from '../../utils/api/api';
 import pairDataForGame from '../../utils/pair/pairDataForGame';
@@ -9,13 +8,13 @@ import pairDataForTeam from '../../utils/pair/pairDataForTeam';
 import { Player } from '../../model/Player';
 import pairDataForPlayer from '../../utils/pair/pairDataForPlayer';
 import switchUrlForType from '../../utils/pair/switchUrlForType';
+import * as TeamModel from '../../model/Team';
+import * as GameModel from '../../model/Game';
 
 const Home = ()=> {
-  const [gameData, setGameData] = useState<GameAttribute[]>([]);
-  const [teamHomeData, setTeamHomeData] = useState<GameAttribute[]>([]);
-  const [teamAwayData, setTeamAwayData] = useState<GameAttribute[]>([]);
-  const [homePlayersData, setHomePlayerData] = useState<Player[]>([]);
-  const [awayPlayersData, setAwayPlayerData] = useState<Player[]>([]);
+  const [gameData, setGameData] = useState<GameModel.Game[]>([]);
+  const [teamData, setTeamData] = useState<TeamModel.Team[]>([]);
+  const [playersData, setPlayersData] = useState<Player[]>([]);
 
   useEffect(() => {
     getAllDiscrepancies().then(result=>{
@@ -27,29 +26,68 @@ const Home = ()=> {
     const game = pairDataForGame(data );
     setGameData(game);
 
-    const homeData = pairDataForTeam(data, 'home');
-    setTeamHomeData (homeData);
+    const homePlayers = pairDataForPlayer(data['homePlayers'] , data['home']['id'] , 'home');
+    const awayPlayers = pairDataForPlayer(data['awayPlayers'] , data['away']['id'] , 'away');
+    setPlayersData([...homePlayers,...awayPlayers]);
 
-    const awayData = pairDataForTeam(data, 'away');
-    setTeamAwayData(awayData);
-    setHomePlayerData(pairDataForPlayer(data['homePlayers'] ))
-    setAwayPlayerData(pairDataForPlayer(data['awayPlayers']))
+    const teams = pairDataForTeam(data);
+    setTeamData(teams);
   }
 
   const generateColumns= (type =0, title = 'Title'): ColumnsType<any>  => {
-    if(type == 0|| type== 1){
-      const columns: ColumnsType<GameAttribute> = [
+    if(type === 0){
+      const columns: ColumnsType<GameModel.Game> = [
         {
           title: <a href={switchUrlForType(type)}>{title}</a>,
-          dataIndex: 'keyName',
-          key: 'keyName',
-          render: (text) => <a>{text}</a>,
+          dataIndex: 'id',
+          key: 'id',
         },
         {
-          title: 'discrepancy value',
-          key: 'value',
-          dataIndex: 'value',
-        },];
+          title: 'attendance',
+          key: 'attendance',
+          dataIndex: 'attendance',
+        },
+      ];
+      return columns;
+    }
+
+    if(type === 1){
+      const columns: ColumnsType<TeamModel.Team> = [
+        {
+          title: <a href={switchUrlForType(type)}>{title}</a>,
+          render: (player) => player.id,
+        },
+        {
+          title: 'Team',
+          key: 'team',
+          dataIndex: 'name',
+        },
+        {
+          title: 'Rush Attempts',
+          key: 'rushAttempts',
+          dataIndex: 'rushAttempts',
+        },
+        {
+          title: 'Rush Touch Downs',
+          key: 'rushTds',
+          dataIndex: 'rushTds',
+        },
+        {
+          title: 'Rush Yards Ganed',
+          key: 'rushYdsGained',
+          dataIndex: 'rushYdsGained',
+        },
+        {
+          title: 'Receptions',
+          key: 'rec',
+          dataIndex: 'rec',
+        },
+        {
+          title: 'Receiving Yards',
+          key: 'receivingYards',
+          dataIndex: 'receivingYards',
+        },
+      ]
       return columns;
     }
 
@@ -59,12 +97,17 @@ const Home = ()=> {
         render: (player) => player.id,
       },
       {
-        title: 'rush Attempts',
+        title: 'Team',
+        key: 'team',
+        dataIndex: 'team',
+      },
+      {
+        title: 'Rush Attempts',
         key: 'rushAttempts',
         dataIndex: 'rushAttempts',
       },
       {
-        title: 'rush touch downs',
+        title: 'Rush Touch Downs',
         key: 'rushTds',
         dataIndex: 'rushTds',
       },
@@ -91,10 +134,8 @@ const Home = ()=> {
       <p className='text-2xl font-bold text-center my-6'> All discrepancies </p>
       <div className='px-5 my-5'>
         <Table columns={generateColumns(0, 'Game')} dataSource={gameData} pagination={false}/>
-        <Table columns={generateColumns(1, 'Home Team')} dataSource={teamHomeData} pagination={false}/>
-        <Table columns={generateColumns(1, 'Away Team')} dataSource={teamAwayData} pagination={false}/>
-        <Table columns={generateColumns(2, 'Home Players')} dataSource={homePlayersData} pagination={false}/>
-        <Table columns={generateColumns(2, 'Away Players')} dataSource={awayPlayersData} pagination={false}/>
+        <Table columns={generateColumns(1, 'Team Id')} dataSource={teamData} pagination={false} title={() => 'Team Discrepancies'} />
+        <Table columns={generateColumns(2, 'Players')} dataSource={playersData} pagination={false}/>
       </div>
     </div>
   );
