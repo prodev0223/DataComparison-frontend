@@ -41,11 +41,13 @@ const Home = ()=> {
           title: <a href={switchUrlForType(type)}>{title}</a>,
           dataIndex: 'id',
           key: 'id',
+          width: '30%',
         },
         {
           title: 'attendance',
           key: 'attendance',
           dataIndex: 'attendance',
+          width: '30%',
         },
       ];
       return columns;
@@ -131,11 +133,11 @@ const Home = ()=> {
 
   return (
     <div className="App">
-      <p className='text-2xl font-bold text-center my-6'> All discrepancies </p>
+      <p className='text-2xl font-bold text-center my-6'> All Discrepancies </p>
       <div className='px-5 my-5'>
-        <Table columns={generateColumns(0, 'Game')} dataSource={gameData} pagination={false}/>
-        <Table columns={generateColumns(1, 'Team Id')} dataSource={teamData} pagination={false} title={() => 'Team Discrepancies'} />
-        <Table columns={generateColumns(2, 'Players')} dataSource={playersData} pagination={false}/>
+        <Table columns={generateColumns(0, 'Game')} dataSource={gameData} pagination={false} title={() => 'Game Discrepancies'} />
+        <Table columns={generateColumns(1, 'Teams')} dataSource={teamData} pagination={false} title={() => 'Teams Discrepancies'} />
+        <Table columns={generateColumns(2, 'Player Id')} dataSource={playersData} pagination={false}title={() => 'Player Discrepancies'} />
       </div>
     </div>
   );
