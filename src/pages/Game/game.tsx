@@ -56,7 +56,7 @@ const Game = ()=> {
         width: '30%',
       },
       {
-        title: 'attendance',
+        title: 'Attendance',
         key: 'attendance',
         dataIndex: 'attendance',
         width: '30%',
