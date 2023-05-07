@@ -6,6 +6,7 @@ import { getDiscrepanciesByTeam } from '../../utils/api/api';
 import pairDataForTeam from '../../utils/pair/pairDataForTeam';
 import { GameAttribute } from '../../model/GameAttribute';
 import switchUrlForType from '../../utils/pair/switchUrlForType';
+import { rejectObject, resolveObject } from '../../utils/pair/actionForField';
 
 interface DataType {
   key: string;
@@ -32,6 +33,60 @@ const Team = ()=> {
     setTeamAwayData(awayData);
   }
 
+  const resolveItem = (item: GameAttribute, title = '')=> {
+    if(title === 'Home Team'){
+      resolveObject('home', item.keyName);
+      setTeamHomeData(current =>
+        current.filter(obj => {
+          return !(obj.keyName === item.keyName && obj.value == item.value)
+        }),
+      );
+    }
+    if(title === 'Away Team'){
+      resolveObject('away', item.keyName);
+      setTeamAwayData(current=>
+        current.filter(obj=> {
+          return !(obj.keyName === item.keyName && obj.value == item.value)
+        }),
+      );
+    }
+  }
+
+  const rejectItem = (item: GameAttribute, title = '')=> {
+    if(title === 'Home Team'){
+      rejectObject('home', item.keyName)
+      setTeamHomeData(prevState=> {
+        const newState = prevState.map(obj => {     
+          // 👇️ if id equals 2, update the current property
+          if (obj.keyName === item.keyName && obj.value == item.value) {
+            return {...obj, isReject: true};
+          }
+    
+          // 👇️ otherwise return the object as is
+          return obj;
+        });
+    
+        return newState;
+      });
+    }
+    if(title === 'Away Team'){
+      rejectObject('away', item.keyName)
+      setTeamAwayData(prevState=> {
+        const newState = prevState.map(obj => {
+          // 👇️ if id equals 2, update the country property
+          if (obj.keyName === item.keyName && obj.value == item.value) {
+            return {...obj, isReject: true};
+          }
+    
+          // 👇️ otherwise return the object as is
+          return obj;
+        });
+    
+        return newState;
+      });
+    }
+  }
+
   const generateColumns = (type =0, title = 'Title'): ColumnsType<any>=> {
     const columns: ColumnsType<GameAttribute> = [
       {
@@ -44,7 +99,33 @@ const Team = ()=> {
         title: 'discrepancy value',
         key: 'value',
         dataIndex: 'value',
-      }];
+      },
+      {
+        title: 'Tags',
+        render: (item) =>{
+          let color = 'volcano';
+          if(item.keyName == 'id'||!item.isReject){
+            return ''
+          }
+          return (
+            <Tag color={color} key={item.isReject??'noaction'}>
+              Reject
+            </Tag>
+          );
+        }
+      },
+      {
+        title: 'Action',
+        key: 'action',
+        width: 200,
+        render: (_, record) => (
+          <Space size="middle">
+            <Button size='small' type="primary" danger>Ignore</Button>
+            <Button size='small' type='primary'>Resolve</Button>
+          </Space>
+        ),
+      },
+    ];
     return columns;
   }
 
