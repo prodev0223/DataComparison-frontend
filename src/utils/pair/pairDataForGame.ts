@@ -8,8 +8,6 @@ const pairDataForGame = (data: any): Game[] =>{
         let game:Game = {
             id: data.game.id,
             key: data.game.id,
-            home: data.home.id,
-            away: data.away.id,
             attendance: data.game.attendance,
             isReject: isReject
         }
