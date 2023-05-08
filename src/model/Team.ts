@@ -1,5 +1,6 @@
 export interface Team{
     id: any,
+    key: any,
     name:any,
     rushAttempts: any,
     rushTds: any,

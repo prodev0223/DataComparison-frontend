@@ -1,5 +1,6 @@
 export interface Player {
     id: any,
+    key: any,
     rushAttempts: any,
     rushTds: any,
     rushYdsGained:any,

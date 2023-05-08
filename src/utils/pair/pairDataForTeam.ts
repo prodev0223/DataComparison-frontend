@@ -9,6 +9,7 @@ const pairDataForTeam = (data:any ): Team[] =>{
         if(isReject>=0){
             let team = {
                 id: data[key]['id'],
+                key: data[key]['id'],
                 name: key,
                 rushAttempts: data[key]['rushAttempts']?? 0,
                 rushTds: data[key]['rushTds']??0,

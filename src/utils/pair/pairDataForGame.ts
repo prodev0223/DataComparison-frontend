@@ -7,6 +7,7 @@ const pairDataForGame = (data: any): Game[] =>{
     if(isReject>=0){
         let game:Game = {
             id: data.game.id,
+            key: data.game.id,
             home: data.home.id,
             away: data.away.id,
             attendance: data.game.attendance,

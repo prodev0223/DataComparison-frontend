@@ -10,6 +10,7 @@ const  pairDataForPlayer = (players: any, teamId: String , team: String): Player
         if(isReject>=0){
             arr.push({
                 id: player.id??'',
+                key: player.id??'',
                 rushAttempts: player.rushAttempts??0,
                 rushTds: player.rushTds??0,
                 rushYdsGained: player.rushYdsGained??0,
