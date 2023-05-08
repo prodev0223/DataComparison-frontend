@@ -1,26 +1,104 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
 import {getAllDiscrepancies} from '../../utils/api/api';
 import pairDataForGame from '../../utils/pair/pairDataForGame';
-import { GameAttribute } from '../../model/GameAttribute';
 import pairDataForTeam from '../../utils/pair/pairDataForTeam';
-import { Player } from '../../model/Player';
 import pairDataForPlayer from '../../utils/pair/pairDataForPlayer';
 import switchUrlForType from '../../utils/pair/switchUrlForType';
 import * as TeamModel from '../../model/Team';
 import * as GameModel from '../../model/Game';
+import * as PlayerModel from '../../model/Player';
+import { GAME, generateColumns, PLAYER, TEAM } from '../../utils/common';
+import { rejectObject, resolveObject } from '../../utils/pair/actionForField';
 
 const Home = ()=> {
   const [gameData, setGameData] = useState<GameModel.Game[]>([]);
   const [teamData, setTeamData] = useState<TeamModel.Team[]>([]);
-  const [playersData, setPlayersData] = useState<Player[]>([]);
+  const [playersData, setPlayersData] = useState<PlayerModel.Player[]>([]);
 
   useEffect(() => {
     getAllDiscrepancies().then(result=>{
       pairAll(result);
     })
   }, []);
+
+  const getHeaderTitle = (type = 0, title = 'Title')=>{
+    return <a href={switchUrlForType(type)}>{title}</a>
+  }
+
+  const resolveGameItem = (item: GameModel.Game) =>{
+    resolveObject('game', item.id)
+    setGameData(prevState => {
+      const newState = prevState.map(obj => {
+        // 👇️ if id equals 2, update the country property
+        if (obj.id === item.id ) {
+          return {...obj, isReject: 1};
+        }
+        // 👇️ otherwise return the object as is
+        return obj;
+      });
+  
+      return newState;
+    });
+  }
+  const rejectGameItem = (item: GameModel.Game) =>{
+    rejectObject('game', item.id)
+    setGameData(current =>
+      current.filter(obj => {
+        return !(obj.id === item.id)
+      }),
+    );
+  }
+
+  const resolveTeamItem = (item:TeamModel.Team) =>{
+    resolveObject('team', item.id);
+    setTeamData(prevState => {
+      const newState = prevState.map(obj => {
+        // 👇️ if id equals 2, update the country property
+        if (obj.id === item.id && obj.name === item.name) {
+          return {...obj, isReject: 1};
+        }
+  
+        // 👇️ otherwise return the object as is
+        return obj;
+      });
+  
+      return newState;
+    });
+  }
+  const rejectTeamItem = (item:TeamModel.Team) =>{
+    rejectObject('team', item.id);
+    setTeamData(current =>
+      current.filter(obj => {
+        return !(obj.id === item.id && obj.name === item.name)
+      }),
+    );
+  }
+
+  const resolvePlayerItem = (item:PlayerModel.Player) =>{
+    resolveObject(item.team+ 'players', item.id);
+    setPlayersData(prevState => {
+      const newState = prevState.map(obj => {
+        // 👇️ if id equals 2, update the country property
+        if (obj.id === item.id && obj.team === item.team) {
+          return {...obj, isReject: 1};
+        }
+  
+        // 👇️ otherwise return the object as is
+        return obj;
+      });
+  
+      return newState;
+    });
+  }
+  const rejectPlayerItem = (item:PlayerModel.Player) =>{
+    rejectObject(item.team+ 'players', item.id)
+    setPlayersData(current =>
+      current.filter(obj => {
+        return !(obj.id === item.id && obj.team === item.team)
+      }),
+    );
+  }
 
   const pairAll = (data: any) => {
     const game = pairDataForGame(data );
@@ -34,105 +112,13 @@ const Home = ()=> {
     setTeamData(teams);
   }
 
-  const generateColumns= (type =0, title = 'Title'): ColumnsType<any>  => {
-    if(type === 0){
-      const columns: ColumnsType<GameModel.Game> = [
-        {
-          title: <a href={switchUrlForType(type)}>{title}</a>,
-          dataIndex: 'id',
-          key: 'id',
-          width: '30%',
-        },
-        {
-          title: 'Attendance',
-          key: 'attendance',
-          dataIndex: 'attendance',
-          width: '30%',
-        },
-      ];
-      return columns;
-    }
-
-    if(type === 1){
-      const columns: ColumnsType<TeamModel.Team> = [
-        {
-          title: <a href={switchUrlForType(type)}>{title}</a>,
-          render: (player) => player.id,
-        },
-        {
-          title: 'Team',
-          key: 'team',
-          dataIndex: 'name',
-        },
-        {
-          title: 'Rush Attempts',
-          key: 'rushAttempts',
-          dataIndex: 'rushAttempts',
-        },
-        {
-          title: 'Rush Touch Downs',
-          key: 'rushTds',
-          dataIndex: 'rushTds',
-        },
-        {
-          title: 'Rush Yards Ganed',
-          key: 'rushYdsGained',
-          dataIndex: 'rushYdsGained',
-        },
-        {
-          title: 'Receptions',
-          key: 'rec',
-          dataIndex: 'rec',
-        },
-        {
-          title: 'Receiving Yards',
-          key: 'receivingYards',
-          dataIndex: 'receivingYards',
-        },
-      ]
-      return columns;
-    }
-
-    const columns: ColumnsType<Player> = [
-      {
-        title: <a href={switchUrlForType(type)}>{title}</a>,
-        render: (player) => player.id,
-      },
-      {
-        title: 'Rush Attempts',
-        key: 'rushAttempts',
-        dataIndex: 'rushAttempts',
-      },
-      {
-        title: 'Rush Touch Downs',
-        key: 'rushTds',
-        dataIndex: 'rushTds',
-      },
-      {
-        title: 'Rush Yards Ganed',
-        key: 'rushYdsGained',
-        dataIndex: 'rushYdsGained',
-      },
-      {
-        title: 'Receptions',
-        key: 'rec',
-        dataIndex: 'rec',
-      },
-      {
-        title: 'Receiving Yards',
-        key: 'receivingYards',
-        dataIndex: 'receivingYards',
-      }];
-    return columns;
-  }
-
   return (
     <div className="App">
       <p className='text-2xl font-bold text-center my-6'> All Discrepancies </p>
       <div className='px-5 my-5'>
-        <Table columns={generateColumns(0, 'Game Id')} dataSource={gameData} pagination={false} title={() => 'Game Discrepancies'} />
-        <Table columns={generateColumns(1, 'Team Id')} dataSource={teamData} pagination={false} title={() => 'Teams Discrepancies'} />
-        <Table columns={generateColumns(2, 'Player Id')} dataSource={playersData} pagination={false}title={() => 'Player Discrepancies'} />
+        <Table columns={generateColumns(GAME, resolveGameItem, rejectGameItem)} dataSource={gameData} pagination={false} title={() => getHeaderTitle(0, 'Game Discrepancies')} />
+        <Table columns={generateColumns(TEAM, resolveTeamItem, rejectTeamItem)} dataSource={teamData} pagination={false} title={() => getHeaderTitle(1, 'Teams Discrepancies')} />
+        <Table columns={generateColumns(PLAYER, resolvePlayerItem, rejectPlayerItem)} dataSource={playersData} pagination={false}title={() => getHeaderTitle(2, 'Player Discrepancies')} />
       </div>
     </div>
   );

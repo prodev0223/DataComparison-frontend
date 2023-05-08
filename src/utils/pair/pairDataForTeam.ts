@@ -1,16 +1,15 @@
 import { Team } from "../../model/Team";
-import { getFieldValue, getSubFieldValue } from "./actionForField";
+import { getSubFieldValue } from "./actionForField";
 
 const pairDataForTeam = (data:any ): Team[] =>{
     let keys = ['home','away'];
     let teams: Team[] = [];
     keys.forEach(key=>{
-        console.log(key, getSubFieldValue('team',data[key]['id'] ), getFieldValue('team'))
         let isReject = getSubFieldValue('team',data[key]['id'] )??0
         if(isReject>=0){
             let team = {
                 id: data[key]['id'],
-                name:key,
+                name: key,
                 rushAttempts: data[key]['rushAttempts']?? 0,
                 rushTds: data[key]['rushTds']??0,
                 rushYdsGained: data[key]['rushYdsGained']??0,
