@@ -116,9 +116,9 @@ const Home = ()=> {
     <div className="App">
       <p className='text-2xl font-bold text-center my-6'> All Discrepancies </p>
       <div className='px-5 my-5'>
-        <Table columns={generateColumns(GAME, resolveGameItem, rejectGameItem)} dataSource={gameData} pagination={false} title={() => getHeaderTitle(0, 'Game Discrepancies')} />
-        <Table columns={generateColumns(TEAM, resolveTeamItem, rejectTeamItem)} dataSource={teamData} pagination={false} title={() => getHeaderTitle(1, 'Teams Discrepancies')} />
-        <Table columns={generateColumns(PLAYER, resolvePlayerItem, rejectPlayerItem)} dataSource={playersData} pagination={false}title={() => getHeaderTitle(2, 'Player Discrepancies')} />
+        <Table columns={generateColumns(GAME, resolveGameItem, rejectGameItem)} dataSource={gameData} title={() => getHeaderTitle(0, 'Game Discrepancies')} />
+        <Table columns={generateColumns(TEAM, resolveTeamItem, rejectTeamItem)} dataSource={teamData} title={() => getHeaderTitle(1, 'Teams Discrepancies')} />
+        <Table columns={generateColumns(PLAYER, resolvePlayerItem, rejectPlayerItem)} dataSource={playersData} title={() => getHeaderTitle(2, 'Player Discrepancies')} />
       </div>
     </div>
   );

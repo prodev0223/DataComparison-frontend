@@ -51,7 +51,7 @@ const Player = ()=> {
     <div className="App">
       <p className='text-2xl font-bold text-center my-6'> Discrepancies For Player </p>
       <div className='px-5'>
-        <Table columns={generateColumns(PLAYER, resolveItem, rejectItem)} dataSource={playersData} pagination={false}/>
+        <Table columns={generateColumns(PLAYER, resolveItem, rejectItem)} dataSource={playersData} />
       </div>
     </div>
   );

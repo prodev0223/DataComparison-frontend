@@ -47,7 +47,7 @@ const Team = ()=> {
     <div className="App">
       <p className='text-2xl font-bold text-center my-6'> Discrepancies For Team </p>
       <div className='px-5'>
-        <Table columns={generateColumns(TEAM, resolveItem, rejectItem)} dataSource={teamData} pagination={false}/>
+        <Table columns={generateColumns(TEAM, resolveItem, rejectItem)} dataSource={teamData} />
       </div>
     </div>
   );
